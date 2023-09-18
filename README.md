@@ -630,7 +630,7 @@ tpdf = 4.05437 - 4.05031 = 0.00406ns
 ```
 </details>
 
-<h1>Day 4: Pre-Layout Timing Analysis</h1>
+<h2>Day 4</h2>
 
 
 
@@ -688,7 +688,7 @@ Clock Tree Synthesis (CTS) is a crucial step in VLSI design, and the choice of a
 
 </details>
 
-<h1>Day 5: Final Steps of RTL to GDS</h1>
+<h2>Day 5</h2>
 <details>
   <summary><b>Routing and Design Rule Check(DRC)</b></summary>
   
