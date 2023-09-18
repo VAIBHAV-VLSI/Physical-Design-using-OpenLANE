@@ -163,7 +163,7 @@ run_synthesis
 
 
 <img width="1470" alt="1" src="https://github.com/VaibhavTiwari-IIITB/Physical_Design_using_OpenLANE/assets/140998525/672c926c-cb01-44ca-a411-53195bc24c1b">
-![Screenshot from 2023-09-11 00-09-35](https://github.com/malobimukherjee/Advanced_Physical_Design_using_OpenLANE/assets/141206513/dfcc7032-5ff2-43ec-a521-ff6d90db3740)
+
 
 To see the synthesis report:
 
