@@ -266,7 +266,7 @@ Flop ratio = (No.of D flipflops)/(Total no.of cells) =1596/10104 = 0.1579
 
 
 
-<h1>Day 2 : Floorplanning and Introduction to Library Cells</h1>
+<h2>Day 2 </h2>
 <details>
   <summary><b>Chip Floorplanning considerations</b></summary>
   <h3>Floorplanning</h3>
