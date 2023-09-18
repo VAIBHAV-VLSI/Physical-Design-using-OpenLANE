@@ -747,7 +747,6 @@ These design rules for physical wires are crucial for maintaining signal integri
 - https://github.com/kunalg123/
 - https://www.vsdiat.com
 - https://github.com/NiteshIIITB/RISC-V
-- https://github.com/stevehoover
 
 
 
