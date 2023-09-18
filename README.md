@@ -349,7 +349,8 @@ run_floorplan
 ```
 <div align="center">
 
-<img src="https://github.com/NiteshIIITB/Physical_Design/assets/140998787/fc8c72c2-7f3e-455f-93e7-ac3e40e8d4e7">  
+
+<img width="1080" alt="2-1" src="https://github.com/VaibhavTiwari-IIITB/Physical_Design_using_OpenLANE/assets/140998525/796dd766-605e-4d8a-ada7-965c619ca6c3">
 </div>
 
 <h4>Post-Floorplan Run and Viewing the Floorplan in Magic:</h4>
@@ -407,7 +408,7 @@ run_placement
 
 
 <div align="center">
-<img src="https://github.com/NiteshIIITB/Physical_Design/assets/140998787/6c12819c-2d9a-44a7-90e1-7ae7eef8db9f">
+<img width="1080" alt="2-2" src="https://github.com/VaibhavTiwari-IIITB/Physical_Design_using_OpenLANE/assets/140998525/1528c8e9-9166-4a8f-a684-2fe24bfe6512">
   
 </div>
 
@@ -426,7 +427,6 @@ magic -T /home/OpenLane/sky130A.tech lef read ../../tmp/merged.max.lef def read 
 <img src="https://github.com/NiteshIIITB/Physical_Design/assets/140998787/0c54e4a8-5b59-4cbb-8610-67e59155808b">
   
 </div>
-
 
 </details>
 
