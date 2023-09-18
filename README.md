@@ -432,6 +432,319 @@ magic -T /home/OpenLane/sky130A.tech lef read ../../tmp/merged.max.lef def read 
 
 
 
+<h2>Day 3</h2>
+<details>
+  <summary><b>CMOS Inverter ngspice simulations</b></summary>
+  <h2>SPICE deck</h2>
+  <p>A Spice deck, often referred to as a Spice netlist or simply Spice file, is a text-based input file used in electronic circuit simulation. Spice stands for "Simulation Program with Integrated Circuit Emphasis," and it is a widely used tool for simulating and analyzing electronic circuits.<br>
+
+A Spice deck contains a description of the components and connections within an electronic circuit, including resistors, capacitors, inductors, transistors, voltage sources, current sources, and more. It specifies the values of these components, their models (which define their behavior), and the interconnections between them. The Spice deck also defines the simulation settings and analysis directives.</p>
+
+<h4>Sample Spice Deck</h4>
+
+```
+* Spice Deck Example
+* Comments start with an asterisk
+
+* Circuit components
+R1  N1  N2  10k   ; Resistor R1 from node N1 to N2 with a value of 10k ohms
+C1  N2  N3  1n    ; Capacitor C1 from node N2 to N3 with a value of 1 nanofarad
+V1  N1  0   DC 5V ; DC voltage source V1 from node N1 to ground (0) with 5 volts
+
+* Transistors and other components can also be defined here
+
+* Simulation settings
+.TRAN  0.1ms  10ms ; Transient analysis from 0.1ms to 10ms
+.DC    V1  0V  10V  1V ; DC sweep of voltage source V1 from 0V to 10V in 1V steps
+.AC    DEC  100  1Hz  1MHz ; AC analysis from 1Hz to 1MHz with 100 points per decade
+
+* Analysis directives
+.PRINT  TRAN  V(N1) V(N2) ; Print the transient simulation results for nodes N1 and N2
+.MEASURE  DC  V(N3) WHEN V(N2)=3V ; Measure voltage at node N3 when V(N2) reaches 3V
+
+```
+<h4>CMOS SPICE deck steps</h4>
+<div align = "center">
+  <img src = "https://github.com/NiteshIIITB/Physical_Design/assets/140998787/28c828ad-348c-4fd5-96e3-2d10a7cd30bb">
+</div>
+
+<p><b>In above figure we have taken size of NMOS and PMOS as equal which is not the case in real cmos circuits.</b></p>
+
+</details>
+
+<details>
+  <summary><b>Inception of Layout of CMOS Inverter</b></summary>
+  
+  ## 16-Mask CMOS Fabrication Process
+
+1. **Substrate Selection:**
+   - Choose the appropriate substrate material for the CMOS chip.
+
+2. **Active Region Formation:**
+   - Isolate active regions using SiO2 and Si3N4 layers, defined through photolithography and etching.
+
+3. **N-Well and P-Well Creation:**
+   - Form N-well and P-well regions via ion implantation:
+     - Boron for P-well.
+     - Phosphorus for N-well.
+
+4. **Gate Terminal Fabrication:**
+   - Create NMOS and PMOS gate terminals using photolithography.
+
+5. **LDD (Lightly Doped Drain) Implementation:**
+   - Introduce LDD regions to prevent the hot electron effect.
+
+6. **Source & Drain Formation:**
+   - Add screen oxide to prevent channelling during implantation.
+   - Perform arsenic ion implantation for source and drain.
+   - Anneal to activate dopants.
+
+7. **Local Interconnects:**
+   - Remove screen oxide with HF etching.
+   - Deposit titanium (Ti) for low-resistance contacts.
+
+8. **Higher-Level Metalization:**
+   - Achieve planarization through Chemical Mechanical Polishing (CMP).
+   - Deposit TiN and Tungsten for interconnects.
+   - Apply a top SiN layer for chip protection.
+
+These steps outline the essential processes in a 16-mask CMOS fabrication, encompassing active region definition, well formation, gate creation, source/drain implantation, interconnects, and chip protection layers.
+
+</details>
+
+<details>
+  <summary><b>Tech File Labs</b></summary>
+
+<h2>CMOS Inverter Characterization</h2>  
+
+
+1. **Clone the `vsdstdcelldesign` Repository:**
+   - Clone the `vsdstdcelldesign` repository into your `openlane_working_dir/openlane` directory using the following command:
+
+     ```bash
+     git clone https://github.com/nickson-jose/vsdstdcelldesign
+     ```
+
+   This command will create a folder named `vsdstdcelldesign` within your `openlane` directory.
+
+2. **Prepare for Magic Invocation:**
+   - To invoke Magic and view the `sky130_inv.mag` file, the `sky130A.tech` file must be included in the command along with its path.
+   - To simplify this command and reduce complexity, you can copy the `sky130A.tech` file from the `magic` folder to the `vsdstdcelldesign` folder.
+
+3. **Invoke Magic:**
+   - Finally, you can easily invoke Magic to view the `sky130_inv.mag` file with the following command:
+
+     ```bash
+     magic -T vsdstdcelldesign/sky130A.tech vsdstdcelldesign/sky130_inv.mag &
+     ```
+
+   This command launches Magic with the specified technology file and opens the `sky130_inv.mag` layout for viewing and seamless integration.
+
+   <div align="center">
+     <img src = "https://github.com/NiteshIIITB/Physical_Design/assets/140998787/f37f164f-75fe-4b0c-b5da-f32622f8077b">
+   </div>
+
+## Verification and SPICE Extraction for Sky130 CMOS Inverter Layout
+
+To verify that the layout corresponds to a CMOS inverter in the Sky130 process, you can follow these verification steps:
+
+1. **Local Interconnect Layer (Locali):**
+   - In Sky130, the first layer is called the local interconnect layer (Locali).
+
+2. **P-Diffusion and N-Diffusion Regions:**
+   - Observe the P-diffusion and N-diffusion regions, along with the Polysilicon, to confirm the presence of CMOS transistors.
+
+3. **Drain and Source Connections:**
+   - Verify the drain and source connections:
+     - The drains of both PMOS and NMOS transistors should be connected to the output port (Y).
+     - The sources of both transistors should be connected to the power supply VDD (VPWR).
+
+4. **Library Exchange Format (LEF):**
+   - LEF, or Library Exchange Format, provides information about cell boundaries, VDD, and GND lines. It does not contain circuit logic details and is often used to protect intellectual property (IP).
+
+5. **SPICE Extraction:**
+   - To extract SPICE data from the Magic layout, follow these commands within the Magic environment using `tkcon`:
+     - `extract all`
+     - `ext2spice cthresh 0 rethresh 0`
+     - `ext2spice`
+
+   This generates the `sky130_in.spice` file.
+
+6. **SPICE Deck Editing:**
+   - Edit the `sky130_in.spice` SPICE deck to include the PMOS and NMOS libraries (`pshort.lib` and `nshort.lib`).
+   - Incorporate the minimum grid size of the inverter, typically measured from the Magic layout, into the deck as:
+     ```
+     .option scale=0.01u
+     ```
+   - Change the model names in the MOSFET definitions to `pshort.model.0` and `nshort.model.0` for PMOS and NMOS, respectively.
+
+7. **Voltage Sources and Simulation Commands:**
+   - Define voltage sources and simulation commands as follows for CMOS inverter circuit simulation.
+   - `VDD VPWR 0 3.3V`
+   - `VSS VGND 0 0V`
+   - `Va A VGND PULSE(0V 3.3V 0 0.1ns 0.1ns 2ns 4ns)`
+   - `.tran 1n 20n`
+   - `.control`
+   - `run`
+
+By following output can be observed
+
+<br>
+<div align="center">
+  <img src= "https://github.com/NiteshIIITB/Physical_Design/assets/140998787/89a0aff6-dca1-4e33-8f8f-85e7db0afb22">
+</div>
+
+<h4>Rise Delay Calculation</h4>
+<div align="center">
+  <img src = "https://github.com/NiteshIIITB/Physical_Design/assets/140998787/e92610b4-3675-411e-a295-a13a8e0fb16b">
+</div>
+  
+
+```
+tr = 2.20395 - 2.16095 = 0.043ns
+```
+<h4>Fall Delay Calculation</h4>
+<div align="center">
+  <img src = "https://github.com/NiteshIIITB/Physical_Design/assets/140998787/6da5cfc6-6524-4baf-b342-f69bbfbee5d4">
+</div>
+  
+```
+tf = 4.0681 - 4.0392 = 0.0289ns
+```
+
+<h4>Propogation Delay Rise</h4>
+<div align="center">
+  <img src = "https://github.com/NiteshIIITB/Physical_Design/assets/140998787/d7ecc59c-2643-4d68-9494-a8178e44e0d2">
+</div>
+  
+```
+tpdr = 2.1847 - 2.1503 = 0.0343ns
+```
+<h4>Propogation Delay Fall</h4>
+<div align="center">
+  <img src = "https://github.com/NiteshIIITB/Physical_Design/assets/140998787/0dcaf738-0a1d-4df1-aa97-5819b7a82ae6">
+</div>
+  
+```
+tpdf = 4.05437 - 4.05031 = 0.00406ns
+```
+</details>
+
+<h1>Day 4: Pre-Layout Timing Analysis</h1>
+
+
+
+<details>
+  <summary><b>Timing Analysis and Clock Tree Synthesis</b></summary>
+  
+</details>
+<details>
+  <summary><b>Clock Tree Synthesis</b></summary>
+
+## Clock Tree Synthesis (CTS)
+
+Clock Tree Synthesis (CTS) is a crucial step in VLSI design, and the choice of a specific technique depends on design requirements, constraints, and goals. Here are various approaches to CTS:
+
+1. **Balanced Tree CTS:**
+   - Distributes the clock signal in a balanced manner, resembling a binary tree.
+   - Aims to minimize clock skew by providing roughly equal path lengths to all clock sinks.
+   - Relatively straightforward but may not be the most power-efficient solution.
+
+2. **H-tree CTS:**
+   - Utilizes a hierarchical tree structure resembling the letter "H."
+   - Effective for distributing clock signals across large chip areas.
+   - Helps reduce clock skew and optimize power consumption.
+
+3. **Star CTS:**
+   - Distributes the clock signal from a single central point (star) to all flip-flops.
+   - Simplifies clock distribution and minimizes clock skew.
+   - May require more buffers near the source.
+
+4. **Global-Local CTS:**
+   - Combines elements of both star and tree topologies.
+   - Global tree distributes the clock signal to major clock domains.
+   - Local trees within each domain further distribute the clock.
+   - Balances global and local optimization for chip-wide and domain-specific clocking.
+
+5. **Mesh CTS:**
+   - Clock wires arranged in a mesh-like grid pattern.
+   - Each flip-flop connects to the nearest available clock wire.
+   - Often used in structured designs like memory arrays.
+
+6. **Adaptive CTS:**
+   - Adjusts the clock tree structure dynamically based on timing and congestion constraints.
+   - Offers flexibility and adaptability but can be more complex to implement.
+
+## Crosstalk in VLSI
+
+**Crosstalk** is a significant concern in VLSI design due to high component integration. It can lead to data corruption, timing violations, and increased power consumption. To mitigate crosstalk, designers employ techniques like optimizing layout and routing, using shielding, implementing clock distribution strategies, and employing clock gating to reduce power consumption during idle states.
+
+## Clock Net Shielding in VLSI
+
+**Clock Net Shielding** is crucial for synchronous operation in VLSI circuits. It isolates the clock network from other signals to reduce interference. Techniques include dedicated clock routing layers, clock tree synthesis algorithms, and buffer insertion for effective clock distribution. Proper clock gating ensures clock signals do not propagate between domains, preventing metastability issues and maintaining synchronization.
+
+ 
+
+
+</details>
+
+<h1>Day 5: Final Steps of RTL to GDS</h1>
+<details>
+  <summary><b>Routing and Design Rule Check(DRC)</b></summary>
+  
+  ## Maze Routing and Lee's Algorithm
+
+Routing, in the context of electronic design automation (EDA), is the process of establishing physical connections between two pins on an integrated circuit. Routing algorithms are designed to take source and target pins and determine the most efficient path between them, ensuring a valid and optimized connection.
+
+One notable routing algorithm is the **Maze Routing algorithm**, which includes approaches like **Lee's algorithm**. This method leverages a grid structure, often resembling the grid used during cell customization, for routing purposes. Lee's algorithm starts with two designated points—the source and target—and utilizes this routing grid to identify the shortest or optimal route between them.
+
+In the Lee algorithm, labels are assigned to neighboring grid cells around the source, incrementing them incrementally from 1 until the path reaches the target (e.g., from 1 to 7). During this process, various paths may emerge, including L-shaped and zigzag-shaped routes. Lee's algorithm prioritizes selecting the best path, typically favoring L-shaped routes over zigzags. If no L-shaped paths are available, it may resort to zigzag routes. This approach proves especially valuable for global routing tasks within the IC design process.
+
+However, it's important to note that while Lee's algorithm is effective for routing between two pins, it can become time-consuming when dealing with a large number of pins, such as those found in complex integrated circuits. In such cases, alternative routing algorithms are often explored to address similar routing challenges efficiently.
+
+<div align="center">
+<img src="https://github.com/NiteshIIITB/Physical_Design/assets/140998787/48c7e627-33a7-4cf3-a525-a8f9ff9322f9">
+  
+</div>
+
+## Design Rule Check (DRC) for Physical Wires
+
+DRC is a critical step in the semiconductor design and manufacturing process, ensuring that a design complies with the predefined process technology rules provided by the foundry. It plays a pivotal role in the physical design flow, guaranteeing that the design adheres to manufacturing requirements and reduces the risk of chip failure, ultimately determining the quality of the chip.
+
+### Some Key Design Rules for Physical Wires
+
+1. **Minimum Width of the Wire:**
+   - This rule specifies the minimum acceptable width for wires in the design. Wires must be wide enough to carry the desired current without excessive resistance.
+
+2. **Minimum Spacing Between the Wires:**
+   - DRC checks for the minimum allowable distance between adjacent wires to prevent electrical interference or short circuits.
+
+3. **Minimum Pitch of the Wire:**
+   - The pitch refers to the center-to-center spacing between wires. DRC verifies that the pitch meets the required minimum value, ensuring proper wire placement and density.
+
+4. **Via Rules:**
+   - To address signal short violations or connect wires from one metal layer to another, designers use vias. DRC checks the following aspects of via design:
+
+     - **Via Width:** Ensures that the via's width is within acceptable limits for the chosen technology.
+     - **Via Spacing:** Checks the minimum spacing between vias to avoid electrical issues.
+     
+These design rules for physical wires are crucial for maintaining signal integrity, preventing shorts, and ensuring the manufacturability of integrated circuits.
+
+<div align="center">
+
+<img src ="https://github.com/NiteshIIITB/Physical_Design/assets/140998787/f23f26a3-9d8a-4b58-ba2a-35133404e9be">  
+</div>
+
+</details>
+
+<details>
+  <summary><b>Power Distribution Network and Routing</b></summary>
+</details>
+<h1>References</h1>
+<ul>
+  <li><a href ="https://github.com/kunalg123/">Kunal Ghosh Github(Mentor)</a></li>
+</ul>
+
 
 
 
