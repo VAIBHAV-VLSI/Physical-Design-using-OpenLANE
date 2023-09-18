@@ -2,7 +2,7 @@
   
 ## Day 1
 <details>  
-<summary>Introduction to RISC-V</summary>
+<summary>Introduction to RISC-V</summary>  
  
 **RISC-V** (pronounced "risk-five") is an open-source instruction set architecture (ISA) that has gained significant attention and popularity in recent years. It is designed to be simple, modular, and customizable, making it suitable for a wide range of applications from embedded systems to supercomputers. In this introduction to RISC-V architecture, we'll cover its key concepts and characteristics:
 
